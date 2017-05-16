@@ -1,0 +1,125 @@
+group 'info.ns01.thymeleaf-editor'
+version '0.0.1-SNAPSHOT'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        jcenter()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.3.RELEASE")
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.4.17"
+        classpath "net.saliman:gradle-cobertura-plugin:2.4.0"
+    }
+}
+
+apply plugin: 'java'
+apply plugin: "org.springframework.boot"
+apply plugin: 'idea'
+apply plugin: 'maven-publish'
+apply plugin: "com.jfrog.artifactory"
+apply plugin: "net.saliman.cobertura"
+apply plugin: 'checkstyle'
+apply plugin: 'findbugs'
+
+jar {
+    baseName = 'thymeleaf-editor'
+    version =  '0.0.1-SNAPSHOT'
+}
+
+idea {
+    module {
+        inheritOutputDirs = false
+        outputDir = file("$buildDir/classes/main/")
+    }
+}
+
+repositories {
+
+    maven { url "https://repo.maven.apache.org/maven2" }
+    mavenLocal()
+    maven {
+        url "${artifactory_contextUrl}/J_MyHomeInfo_Lib/"
+        credentials {
+            username "${artifactory_user}"
+            password = "${artifactory_password}"
+        }
+    }
+
+}
+
+artifactory {
+    contextUrl = "${artifactory_contextUrl}"
+    publish {
+        repository {
+            repoKey = 'J_MyHomeInfo_App'
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+        }
+        defaults {
+            publications('mavenJava')
+        }
+    }
+    resolve {
+        contextUrl = "${artifactory_contextUrl}"
+        repoKey = 'J_MyHomeInfo_App'
+        username = "${artifactory_user}"
+        password = "${artifactory_password}"
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+//noinspection GroovyUnusedAssignment
+sourceCompatibility = 1.8
+
+//noinspection GroovyUnusedAssignment
+targetCompatibility = 1.8
+
+test {
+    testLogging {
+        showStandardStreams = true
+        exceptionFormat = 'full'
+    }
+}
+
+idea{
+    module {
+        downloadSources = true
+    }
+}
+
+cobertura {
+    coverageFormats = ["xml"]
+}
+
+checkstyle {
+    configFile = rootProject.file('checkstyle/checkstyle.xml')
+    toolVersion = '7.7'
+}
+
+findbugs {
+    ignoreFailures = true
+}
+
+configurations {
+    compile.exclude module: "spring-boot-starter-tomcat"
+}
+
+dependencies {
+    compile group: 'com.google.guava', name: 'guava', version: '21.0'
+    compile("org.springframework.boot:spring-boot-starter-web:1.5.3.RELEASE")
+    compile("org.springframework.boot:spring-boot-starter-jetty:1.5.3.RELEASE")
+    compile("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.8.8")
+    compile "org.springframework.boot:spring-boot-starter-thymeleaf:1.5.3.RELEASE"
+
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.5.3.RELEASE'
+}
+
