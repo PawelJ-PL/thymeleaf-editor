@@ -1,0 +1,40 @@
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="base"
+      xmlns:th="http://www.thymeleaf.org">
+
+<section layout:fragment="jumbotron-content">
+    <h1>Usage</h1>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+        magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
+        laborum.</p>
+</section>
+
+<section layout:fragment="standard-content">
+    <div class="row">
+        <form method="post" action="" th:object="${templateForm}">
+            <div class="col-lg-6">
+                <h2>Template</h2>
+                <div class="form-group">
+                    <textarea class="form-control" id="template_field" rows="12" th:field="*{template}"></textarea>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <h2>Model</h2>
+                <div class="form-group">
+                    <textarea class="form-control" id="model_field" rows="10" th:field="*{model}"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Generate</button>
+            </div>
+        </form>
+    </div>
+
+    <div>
+        <h2>Result</h2>
+        <div class="form-group">
+            <textarea class="form-control" id="result_field" rows="18" readonly="readonly"></textarea>
+        </div>
+    </div>
+</section>
+
+</html>
