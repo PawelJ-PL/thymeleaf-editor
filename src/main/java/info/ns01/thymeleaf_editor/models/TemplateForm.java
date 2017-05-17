@@ -39,11 +39,15 @@ public class TemplateForm {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         TemplateForm that = (TemplateForm) o;
-        return Objects.equals(template, that.template) &&
-                Objects.equals(model, that.model);
+        return Objects.equals(template, that.template)
+                && Objects.equals(model, that.model);
     }
 
     @Override

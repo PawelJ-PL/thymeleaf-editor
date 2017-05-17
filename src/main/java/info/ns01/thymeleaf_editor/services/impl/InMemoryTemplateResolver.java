@@ -11,9 +11,9 @@ import java.nio.charset.StandardCharsets;
 
 public class InMemoryTemplateResolver implements ITemplateResolver {
     
-    private final String NAME = "MemoryTemplateResolver";
+    private static final String NAME = "MemoryTemplateResolver";
     
-    private final int ORDER = 1;
+    private static final int ORDER = 1;
     
     private String templateMode;
     

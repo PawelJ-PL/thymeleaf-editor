@@ -27,8 +27,8 @@ public class ErrorHandling {
     
     @ExceptionHandler(value = {NoHandlerFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @Order(Ordered.HIGHEST_PRECEDENCE+100)
-    public String handleNoHandler(NoHandlerFoundException err){
+    @Order(Ordered.HIGHEST_PRECEDENCE + 100)
+    public String handleNoHandler(NoHandlerFoundException err) {
         return "error_pages/404";
     }
     
