@@ -1,6 +1,7 @@
 package info.ns01.thymeleaf_editor.models;
 
 import com.google.common.base.MoreObjects;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
@@ -8,9 +9,11 @@ import java.util.Objects;
 public class TemplateForm {
 
     @NotNull
+    @NotEmpty(message = "Template may not be empty")
     private String template;
 
     @NotNull
+    @NotEmpty(message = "Model may not be empty")
     private String model;
 
     public TemplateForm(String template, String model) {
