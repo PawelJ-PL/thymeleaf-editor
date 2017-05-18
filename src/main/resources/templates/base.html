@@ -30,11 +30,14 @@
         </div>
     </div>
 </nav>
-<div th:if="${flash_message}" th:text="${flash_message.message}" class="alert"
-     th:classappend="${flash_message.type} ? 'alert-'+${flash_message.type} : ''"></div>
 
 <div class="jumbotron">
     <div class="container">
+        <div th:if="${flash_message}" class="alert fade in"
+             th:classappend="${flash_message.type} ? 'alert-'+${flash_message.type} : ''">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close" th:if="${flash_message}">&times;</a>
+            <span th:text="${flash_message.message}" th:if="${flash_message}"></span>
+        </div>
         <section layout:fragment="jumbotron-content">
         </section>
     </div>

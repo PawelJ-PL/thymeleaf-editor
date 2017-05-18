@@ -12,14 +12,12 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @ControllerAdvice
-@EnableWebMvc
 public class ErrorHandling {
     
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @Order(Ordered.LOWEST_PRECEDENCE)
     public String returnGeneralError(Exception err) {
         logger.error("Exception occurred: ", err);
         return "error_pages/500";
