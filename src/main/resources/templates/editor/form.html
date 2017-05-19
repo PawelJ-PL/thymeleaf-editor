@@ -2,6 +2,7 @@
       xmlns:th="http://www.thymeleaf.org">
 
 <section layout:fragment="jumbotron-content">
+    <h5 th:inline="text">Thymeleaf version: [[${T(info.ns01.thymeleaf_editor.utils.Utils).getThymeleafVersion()}]]</h5>
     <h1>Usage</h1>
     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
         magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
@@ -32,7 +33,7 @@
     <div>
         <h2>Result</h2>
         <div class="form-group">
-            <textarea class="form-control" id="result_field" rows="18" readonly="readonly"></textarea>
+            <textarea class="form-control" id="result_field" rows="18" readonly="readonly" th:text="${result}"></textarea>
         </div>
     </div>
 </section>

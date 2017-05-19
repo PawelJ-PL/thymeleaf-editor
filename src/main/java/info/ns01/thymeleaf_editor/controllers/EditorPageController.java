@@ -6,6 +6,7 @@ import info.ns01.thymeleaf_editor.models.enums.FlashMessageType;
 import info.ns01.thymeleaf_editor.services.TemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +29,7 @@ public class EditorPageController {
     private TemplateService templateService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String editorForm(TemplateForm templateForm) {
+    public String editorForm(TemplateForm templateForm, Model model) {
         return "editor/form";
     }
 
@@ -44,15 +45,19 @@ public class EditorPageController {
             return "redirect:/editor";
         }
 
+        String result;
         try {
-            String result = templateService.processTemplate(templateForm.getTemplate(), "HTML5");
+            result = templateService.processTemplate(templateForm.getTemplate(), "HTML5");
         } catch (TemplateInputException err) {
-            messages.add(new FlashMessage(FlashMessageType.DANGER, err.getMessage()));
+            messages.add(new FlashMessage(FlashMessageType.DANGER, err.getMessage()
+                    + "; "
+                    + err.getCause().getMessage()));
             redirectAttributes.addFlashAttribute(STANDARD_FLASH_ATTRIBUTE_NAME, messages);
             return "redirect:/editor";
         }
 
         redirectAttributes.addFlashAttribute(templateForm);
+        redirectAttributes.addFlashAttribute("result", result);
         return "redirect:/editor";
     }
     
