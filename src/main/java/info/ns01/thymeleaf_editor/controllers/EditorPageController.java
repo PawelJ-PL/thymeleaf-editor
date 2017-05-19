@@ -15,6 +15,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static info.ns01.thymeleaf_editor.utils.Constants.STANDARD_FLASH_ATTRIBUTE_NAME;
 
 @Controller
@@ -33,13 +36,11 @@ public class EditorPageController {
     public String handleForm(@Valid TemplateForm templateForm, BindingResult bindingResult,
                              RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            StringBuilder message = new StringBuilder("Following errors detected:");
+            List<FlashMessage> messages = new ArrayList<>();
             for (ObjectError error : bindingResult.getAllErrors()) {
-                message.append("\n");
-                message.append(error.getDefaultMessage());
+                messages.add(new FlashMessage(FlashMessageType.WARNING, error.getDefaultMessage()));
             }
-            redirectAttributes.addFlashAttribute(STANDARD_FLASH_ATTRIBUTE_NAME,
-                    new FlashMessage(FlashMessageType.WARNING, message.toString()));
+            redirectAttributes.addFlashAttribute(STANDARD_FLASH_ATTRIBUTE_NAME, messages);
         }
         return "redirect:/editor";
     }
