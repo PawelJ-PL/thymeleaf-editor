@@ -57,7 +57,7 @@ public class EditorPageController {
         }
     
         try {
-            Map<String, JsonNode> variables = modelService.extractVariables(templateForm.getModel());
+            Map<String, Object> variables = modelService.extractVariables(templateForm.getModel());
         } catch (InvalidModelException err) {
             logger.info("Invalid model: {}, error: {}", err.getModel(), err.getError(), err);
             messages.add(new FlashMessage(FlashMessageType.DANGER, "Invalid model. See usage below"));

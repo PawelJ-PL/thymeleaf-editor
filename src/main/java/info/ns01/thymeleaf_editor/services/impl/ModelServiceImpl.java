@@ -12,13 +12,22 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static info.ns01.thymeleaf_editor.utils.JsonUtils.convertStringToJson;
+import static info.ns01.thymeleaf_editor.utils.JsonUtils.convertNodeToOrdinaryObject;
 
 @Service
 public class ModelServiceImpl implements ModelService {
     
     @Override
-    public Map<String, JsonNode> extractVariables(String model) {
-        return getJsonVariablesMap(model);
+    public Map<String, Object> extractVariables(String model) {
+        return getObjectVariablesMap(model);
+    }
+    
+    private Map<String, Object> getObjectVariablesMap(String model) {
+        return getJsonVariablesMap(model)
+                .entrySet().stream()
+                .unordered()
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                                          entry -> convertNodeToOrdinaryObject(entry.getValue())));
     }
     
     private Map<String, JsonNode> getJsonVariablesMap(String model) {
@@ -39,8 +48,8 @@ public class ModelServiceImpl implements ModelService {
             return splitVariables(model)
                     .stream()
                     .unordered()
-                    .collect(Collectors.toMap(var -> var.split("=", 2)[0],
-                                              x -> x.split("=", 2)[1]));
+                    .collect(Collectors.toMap(var -> var.split("\\s*=\\s*", 2)[0],
+                                              x -> x.split("\\s*=\\s*", 2)[1]));
         } catch (ArrayIndexOutOfBoundsException err) {
             throw new InvalidModelException(model, "ArrayIndexOutOfBoundsException: " + err.getMessage(), err);
         }
