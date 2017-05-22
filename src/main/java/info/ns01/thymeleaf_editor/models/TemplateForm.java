@@ -11,9 +11,7 @@ public class TemplateForm {
     @NotNull
     @NotEmpty(message = "Template may not be empty")
     private String template;
-
-    @NotNull
-    @NotEmpty(message = "Model may not be empty")
+    
     private String model;
 
     public TemplateForm(String template, String model) {

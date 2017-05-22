@@ -1,6 +1,7 @@
 package info.ns01.thymeleaf_editor.controllers;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import info.ns01.thymeleaf_editor.exceptions.InvalidModelException;
 import info.ns01.thymeleaf_editor.models.FlashMessage;
 import info.ns01.thymeleaf_editor.models.TemplateForm;
@@ -22,6 +23,7 @@ import org.thymeleaf.exceptions.TemplateInputException;
 import javax.validation.Valid;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +43,7 @@ public class EditorPageController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String editorForm(TemplateForm templateForm, Model model) {
+        model.addAttribute("extraScripts", ImmutableList.of("/scripts/render.js"));
         return "editor/form";
     }
 
@@ -53,21 +56,24 @@ public class EditorPageController {
                 messages.add(new FlashMessage(FlashMessageType.WARNING, error.getDefaultMessage()));
             }
             redirectAttributes.addFlashAttribute(STANDARD_FLASH_ATTRIBUTE_NAME, messages);
+            redirectAttributes.addFlashAttribute(templateForm);
             return "redirect:/editor";
         }
     
+        Map<String, Object> variables;
         try {
-            Map<String, Object> variables = modelService.extractVariables(templateForm.getModel());
+            variables = getModelVariables(templateForm.getModel());
         } catch (InvalidModelException err) {
             logger.info("Invalid model: {}, error: {}", err.getModel(), err.getError(), err);
             messages.add(new FlashMessage(FlashMessageType.DANGER, "Invalid model. See usage below"));
             redirectAttributes.addFlashAttribute(STANDARD_FLASH_ATTRIBUTE_NAME, messages);
+            redirectAttributes.addFlashAttribute(templateForm);
             return "redirect:/editor";
         }
 
         String result;
         try {
-            result = templateService.processTemplate(templateForm.getTemplate(), "HTML5");
+            result = templateService.processTemplate(templateForm.getTemplate(), variables, "HTML5");
         } catch (TemplateInputException err) {
             messages.add(new FlashMessage(FlashMessageType.DANGER, err.getMessage()
                     + "; "
@@ -79,6 +85,13 @@ public class EditorPageController {
         redirectAttributes.addFlashAttribute(templateForm);
         redirectAttributes.addFlashAttribute("result", result);
         return "redirect:/editor";
+    }
+    
+    private Map<String, Object> getModelVariables(String model) {
+        if (Strings.isNullOrEmpty(model)) {
+            return Collections.emptyMap();
+        }
+        return modelService.extractVariables(model);
     }
     
 }
