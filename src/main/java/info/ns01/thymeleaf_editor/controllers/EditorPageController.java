@@ -3,6 +3,7 @@ package info.ns01.thymeleaf_editor.controllers;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import info.ns01.thymeleaf_editor.exceptions.InvalidModelException;
+import info.ns01.thymeleaf_editor.exceptions.InvalidUserInputException;
 import info.ns01.thymeleaf_editor.models.FlashMessage;
 import info.ns01.thymeleaf_editor.models.TemplateForm;
 import info.ns01.thymeleaf_editor.models.enums.FlashMessageType;
@@ -51,42 +52,14 @@ public class EditorPageController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public String handleForm(@Valid TemplateForm templateForm, BindingResult bindingResult,
                              RedirectAttributes redirectAttributes) {
-        List<FlashMessage> messages = new ArrayList<>();
-        if (bindingResult.hasErrors()) {
-            for (ObjectError error : bindingResult.getAllErrors()) {
-                messages.add(new FlashMessage(FlashMessageType.WARNING, error.getDefaultMessage()));
-            }
-            redirectAttributes.addFlashAttribute(STANDARD_FLASH_ATTRIBUTE_NAME, messages);
-            redirectAttributes.addFlashAttribute(templateForm);
-            return "redirect:/editor";
-        }
-
-        if (!Utils.getStandardTemplateModesNames().contains(templateForm.getMode())) {
-            messages.add(new FlashMessage(FlashMessageType.WARNING, "Invalid template mode"));
-            redirectAttributes.addFlashAttribute(STANDARD_FLASH_ATTRIBUTE_NAME, messages);
-            redirectAttributes.addFlashAttribute(templateForm);
-            return "redirect:/editor";
-        }
-    
-        Map<String, Object> variables;
-        try {
-            variables = getModelVariables(templateForm.getModel());
-        } catch (InvalidModelException err) {
-            logger.info("Invalid model: {}, error: {}", err.getModel(), err.getError(), err);
-            messages.add(new FlashMessage(FlashMessageType.DANGER, "Invalid model. See usage below"));
-            redirectAttributes.addFlashAttribute(STANDARD_FLASH_ATTRIBUTE_NAME, messages);
-            redirectAttributes.addFlashAttribute(templateForm);
-            return "redirect:/editor";
-        }
-
         String result;
         try {
-            result = templateService.processTemplate(templateForm.getTemplate(), variables, "HTML5");
-        } catch (TemplateInputException err) {
-            messages.add(new FlashMessage(FlashMessageType.DANGER, err.getMessage()
-                    + "; "
-                    + err.getCause().getMessage()));
-            redirectAttributes.addFlashAttribute(STANDARD_FLASH_ATTRIBUTE_NAME, messages);
+            validateForm(bindingResult, templateForm);
+            Map<String, Object> variables = getModelVariables(templateForm.getModel());
+            result = getResult(templateForm, variables);
+        } catch (InvalidUserInputException err) {
+            redirectAttributes.addFlashAttribute(STANDARD_FLASH_ATTRIBUTE_NAME, err.getMessages());
+            redirectAttributes.addFlashAttribute(templateForm);
             return "redirect:/editor";
         }
 
@@ -99,7 +72,47 @@ public class EditorPageController {
         if (Strings.isNullOrEmpty(model)) {
             return Collections.emptyMap();
         }
-        return modelService.extractVariables(model);
+        try {
+            return modelService.extractVariables(model);
+        } catch (InvalidModelException err) {
+            logger.info("Invalid model: {}, error: {}", err.getModel(), err.getError(), err);
+            throw new InvalidUserInputException("Invalid model",
+                    ImmutableList.of(new FlashMessage(FlashMessageType.DANGER,
+                            "Invalid model. See usage below")));
+        }
+    }
+
+    private void validateForm(BindingResult bindingResult, TemplateForm templateForm) {
+        validateBindingResult(bindingResult);
+        validateSupportedTemplateMode(templateForm);
+    }
+
+    private void validateBindingResult(BindingResult bindingResult) {
+        if (!bindingResult.hasErrors()) {
+            return;
+        }
+        List<FlashMessage> messages = new ArrayList<>();
+        for (ObjectError error : bindingResult.getAllErrors()) {
+            messages.add(new FlashMessage(FlashMessageType.WARNING, error.getDefaultMessage()));
+        }
+        throw new InvalidUserInputException("Error during processing form", messages);
+    }
+
+    private void validateSupportedTemplateMode(TemplateForm templateForm) {
+        if (!Utils.getStandardTemplateModesNames().contains(templateForm.getMode())) {
+            throw new InvalidUserInputException("Invalid template mode",
+                    ImmutableList.of(new FlashMessage(FlashMessageType.WARNING, "Invalid template mode")));
+        }
+    }
+
+    private String getResult(TemplateForm templateForm, Map<String, Object> variables) {
+        try {
+            return templateService.processTemplate(templateForm.getTemplate(), variables, templateForm.getMode());
+        } catch (TemplateInputException err) {
+            String flashMessage = err.getMessage() + "; " + err.getCause().getMessage();
+            throw new InvalidUserInputException("Unable to process template",
+                    ImmutableList.of(new FlashMessage(FlashMessageType.DANGER, flashMessage)));
+        }
     }
     
 }
