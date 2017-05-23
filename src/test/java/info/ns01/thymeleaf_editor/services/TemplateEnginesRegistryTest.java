@@ -60,7 +60,7 @@ public class TemplateEnginesRegistryTest {
         TemplateEngine templateEngine = templateEnginesRegistry.getTemplateEngineForMode("HTML5");
         
         //then
-        assertThat(templateEngine==firstInstance).isTrue();
+        assertThat(templateEngine == firstInstance).isTrue();
     }
     
 }

@@ -25,7 +25,19 @@
                 <div class="form-group">
                     <textarea class="form-control" id="model_field" rows="10" th:field="*{model}"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">Generate</button>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <select th:with="modes=${T(info.ns01.thymeleaf_editor.utils.Utils).getStandardTemplateModesNames()}" id="template_mode" name="template_mode" class="form-control forms" th:field="*{mode}">
+                            <option th:each="mode : ${modes}"
+                                    th:value="${{mode}}" th:text="${mode}">
+                                PLACEHOLDER FOR TEMPLATE MODE
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <button type="submit" class="btn btn-primary">Generate</button>
+                    </div>
+                </div>
             </div>
         </form>
     </div>
@@ -34,7 +46,8 @@
         <h2>Result</h2>
         <div><a th:if="${result}" id="render_page_link" href="#" th:onclick="${'renderPage(''' + result + ''');'}">Render
             result</a> <span th:if="${result}"
-                            class="bg-danger">This can be dangerous with malicious template or model</span></div><br />
+                             class="bg-danger">This can be dangerous with malicious template or model</span></div>
+        <br/>
         <div class="form-group">
             <textarea class="form-control" id="result_field" rows="18" readonly="readonly"
                       th:text="${result}"></textarea></div>

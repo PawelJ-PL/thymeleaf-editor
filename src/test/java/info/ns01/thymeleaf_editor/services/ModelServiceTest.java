@@ -1,6 +1,5 @@
 package info.ns01.thymeleaf_editor.services;
 
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -36,7 +35,9 @@ public class ModelServiceTest {
     public void shouldExtractObjectVariables() throws IOException {
         //given
         String model = resourceAsString("valid_model.txt");
-        JsonNode var1 = JsonUtils.convertStringToJson("{'x':1,'y':'abc','z':{'q':'NN', 'w':222, 'e':{'a':'a'}}}".replace("'", "\""));
+        JsonNode var1 =
+                JsonUtils.convertStringToJson("{'x':1,'y':'abc','z':{'q':'NN', 'w':222, 'e':{'a':'a'}}}"
+                        .replace("'", "\""));
         JsonNode var2 = JsonUtils.convertStringToJson("{'var1':100, 'var2':'KKK'}".replace("'", "\""));
         JsonNode var3 = JsonUtils.convertStringToJson("{'a':33, 'b':{'f':'x'}}".replace("'", "\""));
         Map<String, Object> expectedResult = ImmutableMap.of("aaa", JsonUtils.convertNodeToOrdinaryObject(var1),

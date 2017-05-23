@@ -8,6 +8,7 @@ import info.ns01.thymeleaf_editor.models.TemplateForm;
 import info.ns01.thymeleaf_editor.models.enums.FlashMessageType;
 import info.ns01.thymeleaf_editor.services.ModelService;
 import info.ns01.thymeleaf_editor.services.TemplateService;
+import info.ns01.thymeleaf_editor.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,13 @@ public class EditorPageController {
             for (ObjectError error : bindingResult.getAllErrors()) {
                 messages.add(new FlashMessage(FlashMessageType.WARNING, error.getDefaultMessage()));
             }
+            redirectAttributes.addFlashAttribute(STANDARD_FLASH_ATTRIBUTE_NAME, messages);
+            redirectAttributes.addFlashAttribute(templateForm);
+            return "redirect:/editor";
+        }
+
+        if (!Utils.getStandardTemplateModesNames().contains(templateForm.getMode())) {
+            messages.add(new FlashMessage(FlashMessageType.WARNING, "Invalid template mode"));
             redirectAttributes.addFlashAttribute(STANDARD_FLASH_ATTRIBUTE_NAME, messages);
             redirectAttributes.addFlashAttribute(templateForm);
             return "redirect:/editor";

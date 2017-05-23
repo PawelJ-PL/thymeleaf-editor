@@ -14,9 +14,14 @@ public class TemplateForm {
     
     private String model;
 
-    public TemplateForm(String template, String model) {
+    @NotNull(message = "Mode may not be null")
+    @NotEmpty(message = "Mode may not be empty")
+    private String mode;
+
+    public TemplateForm(String template, String model, String mode) {
         this.template = template;
         this.model = model;
+        this.mode = mode;
     }
 
     public TemplateForm() {
@@ -38,6 +43,14 @@ public class TemplateForm {
         this.model = model;
     }
 
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -48,12 +61,13 @@ public class TemplateForm {
         }
         TemplateForm that = (TemplateForm) o;
         return Objects.equals(template, that.template)
+                && Objects.equals(mode, that.mode)
                 && Objects.equals(model, that.model);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(template, model);
+        return Objects.hash(template, mode, model);
     }
 
     @Override
@@ -61,6 +75,7 @@ public class TemplateForm {
         return MoreObjects.toStringHelper(this)
                 .add("template", template)
                 .add("model", model)
+                .add("mode", mode)
                 .toString();
     }
 }

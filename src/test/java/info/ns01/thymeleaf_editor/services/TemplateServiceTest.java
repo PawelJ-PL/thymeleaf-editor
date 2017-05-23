@@ -53,11 +53,11 @@ public class TemplateServiceTest {
         
         //when
         thrown.expect(TemplateInputException.class);
-        String result = templateService.processTemplate(template, mode);
+        templateService.processTemplate(template, mode);
     }
     
     @Test
-    public void shouldEvaluateVariableFromJsonNodeObjectModel() throws JsonProcessingException{
+    public void shouldEvaluateVariableFromJsonNodeObjectModel() throws JsonProcessingException {
         //given
         String template = "<div th:text='${person.lastName}'>ABCDE</div>";
         String mode = StandardTemplateModeHandlers.HTML5.getTemplateModeName();
