@@ -2,6 +2,7 @@ package info.ns01.thymeleaf_editor.controllers;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import info.ns01.thymeleaf_editor.config.ErrorHandling;
 import info.ns01.thymeleaf_editor.exceptions.InvalidModelException;
 import info.ns01.thymeleaf_editor.models.FlashMessage;
 import info.ns01.thymeleaf_editor.models.TemplateForm;
@@ -273,6 +274,26 @@ public class EditorPageControllerTest {
         //noinspection unchecked
         assertThat((List<FlashMessage>) result.andReturn().getFlashMap().get(STANDARD_FLASH_ATTRIBUTE_NAME))
                 .containsExactlyInAnyOrder(m1);
+    }
+
+    @Test
+    public void shouldReturnInternalServerError() throws Exception {
+        //given
+        String template = "valid template";
+        String model = "valid model";
+        String mode = "HTML5";
+        when(modelService.extractVariables(model)).thenThrow(new RuntimeException("Unexpected error"));
+
+        //when
+        ResultActions result = mockMvc.perform(post(EDITOR_URL)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("template", template)
+                .param("mode", mode)
+                .param("model", model));
+
+        //then
+        result.andExpect(status().isInternalServerError());
+        result.andExpect(view().name("error_pages/500"));
     }
 
 }

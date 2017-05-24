@@ -27,7 +27,8 @@ public class InvalidUserInputException extends RuntimeException {
         this.messages = messages;
     }
 
-    public InvalidUserInputException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, List<FlashMessage> messages) {
+    public InvalidUserInputException(String message, Throwable cause, boolean enableSuppression,
+                                     boolean writableStackTrace, List<FlashMessage> messages) {
         super(message, cause, enableSuppression, writableStackTrace);
         this.messages = messages;
     }
