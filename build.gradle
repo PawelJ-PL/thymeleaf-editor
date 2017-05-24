@@ -110,6 +110,34 @@ findbugs {
 }
 
 configurations {
+    itestCompile.extendsFrom testCompile
+    itestRuntime.extendsFrom testRuntime
+
+}
+
+sourceSets {
+    itest {
+        compileClasspath += main.output + test.output
+        runtimeClasspath += main.output + test.output
+        java.srcDir file('src/itest/java')
+
+    }
+    test {
+        resources.srcDir file('src/itest/resources')
+    }
+}
+
+task itest(type: Test) {
+    testClassesDir = sourceSets.itest.output.classesDir
+    classpath = sourceSets.itest.runtimeClasspath
+    testLogging {
+        showStandardStreams = true
+        exceptionFormat = 'full'
+    }
+
+}
+
+configurations {
     compile.exclude module: "spring-boot-starter-tomcat"
 }
 
@@ -121,5 +149,9 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-thymeleaf:1.5.3.RELEASE"
 
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.5.3.RELEASE'
+
+    itestCompile group: 'org.seleniumhq.selenium', name: 'selenium-htmlunit-driver', version: '2.52.0'
+    itestCompile group: 'net.sourceforge.htmlunit', name: 'htmlunit', version: '2.26'
+    itestCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.5.3.RELEASE'
 }
 
