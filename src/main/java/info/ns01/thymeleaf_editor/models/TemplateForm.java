@@ -8,7 +8,7 @@ import java.util.Objects;
 
 public class TemplateForm {
 
-    @NotNull
+    @NotNull(message = "Template may not be null")
     @NotEmpty(message = "Template may not be empty")
     private String template;
     

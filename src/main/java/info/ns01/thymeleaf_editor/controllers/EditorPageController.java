@@ -45,7 +45,7 @@ public class EditorPageController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String editorForm(TemplateForm templateForm, Model model) {
-        model.addAttribute("extraScripts", ImmutableList.of("/scripts/render.js"));
+        model.addAttribute("extraScripts", ImmutableList.of("/static/js/render.js"));
         return "editor/form";
     }
 
