@@ -4,11 +4,14 @@
 <section layout:fragment="jumbotron-content">
     <h5 th:inline="text">Thymeleaf version: [[${T(info.ns01.thymeleaf_editor.utils.Utils).getThymeleafVersion()}]]</h5>
     <h1>Usage</h1>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-        magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
-        laborum.</p>
+    <p>In <b>model</b> field enter model variables. Each variable should be located in separate line. Values should be
+        valid Json<br/></p>
+    <h3>Examples:</h3>
+    <code>person = {"firstName": "John", "lastName": "Smith", "age": 84, "alive": true}</code><br/>
+    <code>stringVar = "Lorem ipsum dolor sit amet"</code><br/>
+    <code>numberVar = 43</code><br/>
+    <code>boolVar = false</code><br/>
+
 </section>
 
 <section layout:fragment="standard-content">
@@ -17,17 +20,22 @@
             <div class="col-lg-6">
                 <h2>Template</h2>
                 <div class="form-group">
-                    <textarea class="form-control" id="template_field" rows="12" th:field="*{template}"></textarea>
+                    <textarea class="form-control" id="template_field" rows="12"
+                              placeholder="&lt;div th:text=&quot;${person.firstName}&quot;&gt;ABC&lt;/div&gt;"
+                              th:field="*{template}"></textarea>
                 </div>
             </div>
             <div class="col-lg-6">
                 <h2>Model</h2>
                 <div class="form-group">
-                    <textarea class="form-control" id="model_field" rows="10" th:field="*{model}"></textarea>
+                    <textarea class="form-control" id="model_field" rows="10"
+                              placeholder="person = {&quot;firstName&quot;: &quot;John&quot;, &quot;lastName&quot;: &quot;Smith&quot;, &quot;age&quot;: 84, &quot;alive&quot;: true}"
+                              th:field="*{model}"></textarea>
                 </div>
                 <div class="row">
                     <div class="col-lg-4">
-                        <select th:with="modes=${T(info.ns01.thymeleaf_editor.utils.Utils).getStandardTemplateModesNames()}" id="template_mode" name="template_mode" class="form-control forms" th:field="*{mode}">
+                        <select th:with="modes=${T(info.ns01.thymeleaf_editor.utils.Utils).getStandardTemplateModesNames()}"
+                                id="template_mode" name="template_mode" class="form-control forms" th:field="*{mode}">
                             <option th:each="mode : ${modes}"
                                     th:value="${{mode}}" th:text="${mode}">
                                 PLACEHOLDER FOR TEMPLATE MODE

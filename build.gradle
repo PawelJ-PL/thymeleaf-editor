@@ -1,5 +1,5 @@
 group 'info.ns01.thymeleaf-editor'
-version '0.0.1-SNAPSHOT'
+version '1.0.0'
 
 buildscript {
     repositories {
@@ -25,7 +25,7 @@ apply plugin: 'findbugs'
 
 jar {
     baseName = 'thymeleaf-editor'
-    version =  '0.0.1-SNAPSHOT'
+    version =  '1.0.0'
 }
 
 idea {
