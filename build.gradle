@@ -150,8 +150,8 @@ dependencies {
 
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.5.3.RELEASE'
 
+    itestCompile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.4.0'
     itestCompile group: 'org.seleniumhq.selenium', name: 'selenium-htmlunit-driver', version: '2.52.0'
-    itestCompile group: 'net.sourceforge.htmlunit', name: 'htmlunit', version: '2.26'
     itestCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.5.3.RELEASE'
 }
 
