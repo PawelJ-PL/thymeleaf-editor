@@ -37,7 +37,7 @@
         <div th:if="${flash_message_list}" th:each="flash_message : ${flash_message_list}">
             <div class="alert fade in" th:classappend="'alert-'+${flash_message.type}">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                <span th:text="${flash_message.message}"></span>
+                <span th:text="${flash_message.message}" class="alert_message"></span>
             </div>
         </div>
         <section layout:fragment="jumbotron-content">
