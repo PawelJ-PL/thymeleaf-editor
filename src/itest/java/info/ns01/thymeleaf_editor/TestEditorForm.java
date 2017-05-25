@@ -116,4 +116,50 @@ public class TestEditorForm {
                 expectedMessage)).isTrue();
     }
 
+    @Test
+    public void shouldGenerateErrorOnInvalidModel() throws IOException {
+        //given
+        String template = "<div th:text=\"${var1}\">ABC</div>";
+        String model = "var1";
+        String mode = "HTML5";
+        String expectedMessage = "Invalid model. See usage below";
+
+        //when
+        FormPage resultPage = formPage.submitAndGetResultPage(template, mode, model);
+
+        //then
+        assertThat(resultPage.getTemplateField().getText()).isEqualTo(template);
+        assertThat(resultPage.getModelField().getText()).isEqualTo(model);
+        assertThat(resultPage.getModeSelectList().getFirstSelectedOption().getText()).isEqualTo(mode);
+        assertThat(resultPage.getAlertMessages().size()).isEqualTo(1);
+        assertThat(resultPage.containsAlertWithText(resultPage.getAlertMessages(FlashMessageType.DANGER),
+                expectedMessage)).isTrue();
+        thrown.expect(NoSuchElementException.class);
+        thrown.expectMessage("Unable to locate element with ID: render_page_link");
+        assertThat(formPage.getRenderPageLink().isDisplayed()).isFalse();
+        assertThat(resultPage.getAlertMessages()).isEmpty();
+    }
+
+    @Test
+    public void shouldGenerateErrorOnInvalidTemplate() throws IOException {
+        //given
+        String template = "<div th:text=\"${var1}\">ABC";
+        String model = "var1=\"XYZ\"";
+        String mode = "HTML5";
+        String expectedMessage = "Invalid model. See usage below";
+
+        //when
+        FormPage resultPage = formPage.submitAndGetResultPage(template, mode, model);
+
+        //then
+        assertThat(resultPage.getTemplateField().getText()).isEqualTo(template);
+        assertThat(resultPage.getModelField().getText()).isEqualTo(model);
+        assertThat(resultPage.getModeSelectList().getFirstSelectedOption().getText()).isEqualTo(mode);
+        assertThat(resultPage.getAlertMessages().size()).isEqualTo(1);
+        thrown.expect(NoSuchElementException.class);
+        thrown.expectMessage("Unable to locate element with ID: render_page_link");
+        assertThat(formPage.getRenderPageLink().isDisplayed()).isFalse();
+        assertThat(resultPage.getAlertMessages()).isEmpty();
+    }
+
 }
